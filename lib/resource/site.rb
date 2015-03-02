@@ -18,13 +18,13 @@ class SiteResource < SingleResource
   def delete_resource
     redis.multi do
       redis.del id
-      redis.srem id
+      redis.srem 'index', id
     end
     true
   end
 
   def delete_completed?
-    redis.sismember id == false
+    redis.sismember 'index', id == false
   end
 
   private
