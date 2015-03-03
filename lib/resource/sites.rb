@@ -32,6 +32,6 @@ class SitesResource < CollectionResource
 
   def output
     index = redis.smembers 'sites'
-    index.map { |site| redis.hgetall site }
+    index.map { |site| redis.hgetall "site:#{ site }" }
   end
 end
