@@ -14,15 +14,15 @@ redis = Redis.new
 redis.set 'seed', SecureRandom.random_number(999_999_999) unless redis.get 'seed'
 
 # Enable tracing on all resources.
-# class Webmachine::Resource
-#   def trace?
-#     true
-#   end
-# end
+class Webmachine::Resource
+  def trace?
+    true
+  end
+end
 
 API = Webmachine::Application.new do |app|
   app.routes do
-    # add ['trace', :*], Webmachine::Trace::TraceResource
+    add ['trace', :*], Webmachine::Trace::TraceResource
     add ['sites'], SitesResource
     add ['sites', :id], SiteResource
   end
