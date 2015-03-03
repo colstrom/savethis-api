@@ -8,37 +8,41 @@ class SiteResource < SingleResource
   include RedisSupport
 
   def resource_exists?
-    redis.sismember 'index', id
+    redis.sismember 'sites', id
   end
 
   def is_conflict?
-    redis.exists id
+    redis.exists site_key
   end
 
   def delete_resource
     redis.multi do
-      redis.del id
-      redis.srem 'index', id
+      redis.del site_key
+      redis.srem 'sites', id
     end
     true
   end
 
   def delete_completed?
-    redis.sismember 'index', id == false
+    redis.sismember 'sites', id == false
   end
 
   private
 
   def input
     redis.multi do
-      redis.del id
-      redis.sadd 'index', id
-      payload.each { |key, value| redis.hset id, key, value }
+      redis.del site_key
+      redis.sadd 'sites', id
+      payload.each { |key, value| redis.hset site_key, key, value }
     end
   end
 
   def output
-    redis.hgetall id
+    redis.hgetall site_key
+  end
+
+  def site_key
+    "site:#{ id }"
   end
 
   def id

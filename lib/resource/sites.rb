@@ -25,13 +25,13 @@ class SitesResource < CollectionResource
 
   def input
     redis.multi do
-      redis.sadd 'index', @id
-      payload.each { |key, value| redis.hset @id, key, value }
+      redis.sadd 'sites', id
+      payload.each { |key, value| redis.hset "site:#{ id }", key, value }
     end
   end
 
   def output
-    index = redis.smembers 'index'
-    index.map { |url| redis.hgetall url }
+    index = redis.smembers 'sites'
+    index.map { |site| redis.hgetall site }
   end
 end
